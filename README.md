@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Flight Price Predictor - Full Stack Application
 
 A modern, AI-powered flight price prediction application built with React and Flask. This application uses machine learning algorithms to predict flight prices based on various factors like airline, route, time, and other travel parameters.
@@ -283,3 +284,7 @@ If you encounter any issues:
 ---
 
 Made with ❤️ by the Flight Price Predictor Team
+=======
+# Flight-price-predictor
+AI-powered flight price prediction web application using React and Flask
+>>>>>>> 54da4752e15ffdcd36b53d3ba09c44328aa3ff48
