@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#667eea" />
+    <meta
+      name="description"
+      content="Flight Price Predictor - Get instant flight price predictions powered by AI. Predict flight prices accurately with our advanced machine learning technology."
+    />
+    <meta name="keywords" content="flight, price, prediction, AI, machine learning, travel, booking, India" />
+    <meta name="author" content="Flight Price Predictor Team" />
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Flight Price Predictor - AI-Powered Flight Price Predictions" />
+    <meta property="og:description" content="Get instant flight price predictions powered by AI. Make smarter booking decisions and save money on flights." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://flightpricepredictor.com" />
+    <meta property="og:image" content="%PUBLIC_URL%/og-image.jpg" />
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Flight Price Predictor - AI-Powered Flight Price Predictions" />
+    <meta name="twitter:description" content="Get instant flight price predictions powered by AI. Make smarter booking decisions and save money on flights." />
+    <meta name="twitter:image" content="%PUBLIC_URL%/twitter-image.jpg" />
+    
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    
+    <!-- Preconnect to Google Fonts for better performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Favicon for different devices -->
+    <link rel="icon" type="image/png" sizes="32x32" href="%PUBLIC_URL%/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="%PUBLIC_URL%/favicon-16x16.png">
+    <link rel="mask-icon" href="%PUBLIC_URL%/safari-pinned-tab.svg" color="#667eea">
+    <meta name="msapplication-TileColor" content="#667eea">
+    
+    <title>Flight Price Predictor - AI-Powered Flight Price Predictions</title>
+    
+    <!-- Structured Data for SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Flight Price Predictor",
+      "description": "AI-powered flight price prediction service",
+      "url": "https://flightpricepredictor.com",
+      "applicationCategory": "TravelApplication",
+      "operatingSystem": "Any",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "author": {
+        "@type": "Organization",
+        "name": "Flight Price Predictor Team"
+      }
+    }
+    </script>
+  </head>
+  <body>
+    <noscript>
+      <div style="text-align: center; padding: 50px; font-family: Arial, sans-serif;">
+        <h1>JavaScript Required</h1>
+        <p>You need to enable JavaScript to run this app.</p>
+        <p>Flight Price Predictor requires JavaScript to provide AI-powered flight price predictions.</p>
+      </div>
+    </noscript>
+    
+    <div id="root"></div>
+    
+    <!-- Loading fallback -->
+    <style>
+      #root:empty::after {
+        content: "Loading Flight Price Predictor...";
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        font-family: 'Inter', sans-serif;
+        font-size: 18px;
+        color: #667eea;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      }
+      
+      /* Loading animation */
+      #root:empty::before {
+        content: "";
+        position: absolute;
+        top: 40%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 40px;
+        height: 40px;
+        border: 4px solid rgba(102, 126, 234, 0.3);
+        border-top: 4px solid #667eea;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+      
+      @keyframes spin {
+        0% { transform: translateX(-50%) rotate(0deg); }
+        100% { transform: translateX(-50%) rotate(360deg); }
+      }
+    </style>
+  </body>
+</html>
