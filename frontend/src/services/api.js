@@ -9,7 +9,7 @@ const getApiBaseUrl = () => {
   }
   
   // If in production, use environment variable or fallback URL
-  return process.env.REACT_APP_API_URL || 'https://your-backend-url.vercel.app';
+  return process.env.REACT_APP_API_URL || 'https://flight-price-predictor-7pj6.onrender.com';
 };
 
 const API_BASE_URL = getApiBaseUrl();
