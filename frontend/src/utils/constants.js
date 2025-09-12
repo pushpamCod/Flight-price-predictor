@@ -1,7 +1,7 @@
 // API Configuration
-export const API_BASE_URL = process.env.NODE_ENV === 'production' 
+/*export const API_BASE_URL = process.env.NODE_ENV === 'production' 
   ? 'https://your-backend-domain.com' 
-  : 'http://localhost:5000';
+  : 'http://localhost:5000';*/
 
 export const API_ENDPOINTS = {
   PREDICT: '/api/predict',

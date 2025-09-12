@@ -1,5 +1,18 @@
 import axios from 'axios';
-import { API_BASE_URL, API_ENDPOINTS, UI_CONFIG, ERROR_MESSAGES } from '../utils/constants';
+import { API_ENDPOINTS, UI_CONFIG, ERROR_MESSAGES } from '../utils/constants';
+
+// Smart API Base URL function
+const getApiBaseUrl = () => {
+  // If in development, use empty string (proxy will handle it)
+  if (process.env.NODE_ENV === 'development') {
+    return ''; // Empty string = relative URLs, proxy handles it
+  }
+  
+  // If in production, use environment variable or fallback URL
+  return process.env.REACT_APP_API_URL || 'https://your-backend-url.vercel.app';
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 // Create axios instance with default configuration
 const apiClient = axios.create({
@@ -25,6 +38,8 @@ apiClient.interceptors.request.use(
       console.log('API Request:', {
         method: config.method?.toUpperCase(),
         url: config.url,
+        baseURL: config.baseURL,
+        fullUrl: `${config.baseURL}${config.url}`,
         data: config.data
       });
     }
@@ -273,6 +288,16 @@ class ApiService {
     
     // Make request with retry
     return this.retryRequest(() => this.predictFlightPrice(formattedData));
+  }
+
+  // Debug method to check current API configuration
+  getApiConfig() {
+    return {
+      baseURL: API_BASE_URL,
+      environment: process.env.NODE_ENV,
+      apiUrl: process.env.REACT_APP_API_URL,
+      endpoints: API_ENDPOINTS
+    };
   }
 }
 
