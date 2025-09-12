@@ -162,7 +162,7 @@ export const SOCIAL_LINKS = [
 
 // Contact Information
 export const CONTACT_INFO = {
-  email: 'info@flightprediction.com',
+  email: 'na.com',
   phone: '+123-456-7890',
   address: 'Kolkata,India'
 };
