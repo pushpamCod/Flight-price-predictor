@@ -17,7 +17,87 @@ const PredictionResult = ({ result, onNewPrediction, className = '' }) => {
 
   if (!result) return null;
 
-  const { predicted_price, formatted_price, flight_details } = result;
+  // Extract data with proper fallbacks
+  const predicted_price = result.predicted_price || result.price || result.prediction || 0;
+  const formatted_price = result.formatted_price || `₹${predicted_price.toLocaleString()}`;
+  
+  // Create flight details from available data with extensive field variations
+  const getRouteString = () => {
+    const flightData = result.flightData || result;
+    
+    // Try multiple field name combinations for source/origin
+    const source = flightData.source_city || flightData.source || flightData.from || flightData.origin || 
+                  flightData.departure_city || flightData.start || flightData.Source;
+    
+    // Try multiple field name combinations for destination
+    const destination = flightData.destination_city || flightData.destination || flightData.to || flightData.dest || 
+                       flightData.arrival_city || flightData.end || flightData.Destination;
+    
+    if (source && destination && source !== 'N/A' && destination !== 'N/A') {
+      return `${source} → ${destination}`;
+    }
+    
+    // Fallback to result level route if available
+    return result.route || 'Route not available';
+  };
+
+  const getAirline = () => {
+    const flightData = result.flightData || result;
+    return flightData.airline || flightData.carrier || flightData.Airline || 
+           result.airline || 'Airline not specified';
+  };
+
+  const getClass = () => {
+    const flightData = result.flightData || result;
+    return flightData.class || flightData.travel_class || flightData.cabin_class || 
+           flightData.Class || result.class || 'Economy';
+  };
+
+  const getDuration = () => {
+    const flightData = result.flightData || result;
+    return flightData.duration || flightData.flight_duration || flightData.Duration || 
+           result.duration || 'Duration not available';
+  };
+
+  const getDeparture = () => {
+    const flightData = result.flightData || result;
+    return flightData.departure_time || flightData.dep_time || flightData.departure || 
+           flightData.depart_time || flightData.Dep_Time || result.departure || 'Departure time not available';
+  };
+
+  const getArrival = () => {
+    const flightData = result.flightData || result;
+    return flightData.arrival_time || flightData.arrive_time || flightData.arrival || 
+           flightData.Arrival_Time || result.arrival || 'Arrival time not available';
+  };
+
+  const getStops = () => {
+    const flightData = result.flightData || result;
+    const stops = flightData.total_stops || flightData.stops || flightData.Total_Stops || 
+                 flightData.num_stops || result.stops;
+    
+    if (stops === 0) return 'Non-stop';
+    if (stops === 1) return '1 stop';
+    if (stops > 1) return `${stops} stops`;
+    return 'Stops not specified';
+  };
+
+  const getDaysLeft = () => {
+    const flightData = result.flightData || result;
+    return flightData.days_left || flightData.days_to_departure || flightData.Days_Left || 
+           result.days_left || 'Not specified';
+  };
+
+  const flight_details = {
+    route: getRouteString(),
+    airline: getAirline(),
+    class: getClass(),
+    duration: getDuration(),
+    departure: getDeparture(),
+    arrival: getArrival(),
+    stops: getStops(),
+    days_left: getDaysLeft()
+  };
 
   // Handle copy to clipboard
   const handleCopy = async () => {
