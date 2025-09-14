@@ -24,7 +24,15 @@
       "destination": "https://flight-price-predictor-7pj6.onrender.com/api/$1"
     },
     {
-      "source": "/((?!api|static).*)",
+      "source": "/health",
+      "destination": "https://flight-price-predictor-7pj6.onrender.com/health"
+    },
+    {
+      "source": "/model-info", 
+      "destination": "https://flight-price-predictor-7pj6.onrender.com/model-info"
+    },
+    {
+      "source": "/((?!api|health|model-info|static).*)",
       "destination": "/index.html"
     }
   ]

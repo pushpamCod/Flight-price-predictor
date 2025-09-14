@@ -1,10 +1,10 @@
 import axios from 'axios';
 
-// API Endpoints - Updated for deployment
+// API Endpoints - Fixed to match backend
 const API_ENDPOINTS = {
   PREDICT: '/api/predict',
-  HEALTH: '/api/health',
-  MODEL_INFO: '/api/model-info',
+  HEALTH: '/health',
+  MODEL_INFO: '/model-info', 
   OPTIONS: '/api/options'
 };
 
