@@ -71,15 +71,48 @@ const PredictionResult = ({ result, onNewPrediction, className = '' }) => {
            flightData.Arrival_Time || result.arrival || 'Arrival time not available';
   };
 
-  const getStops = () => {
+const getStops = () => {
     const flightData = result.flightData || result;
     const stops = flightData.total_stops || flightData.stops || flightData.Total_Stops || 
                  flightData.num_stops || result.stops;
     
-    if (stops === 0) return 'Non-stop';
-    if (stops === 1) return '1 stop';
-    if (stops > 1) return `${stops} stops`;
-    return 'Stops not specified';
+    // Handle different stop formats
+    if (!stops || stops === null || stops === undefined || stops === '') {
+      return 'Stops not specified';
+    }
+    
+    // Handle string values from backend
+    const stopsStr = stops.toString().toLowerCase();
+    
+    if (stopsStr.includes('non-stop') || stopsStr.includes('nonstop') || stopsStr === '0') {
+      return 'No stops';
+    }
+    
+    if (stopsStr.includes('1 stop') || stopsStr === '1') {
+      return '1 stop';
+    }
+    
+    if (stopsStr.includes('2 stops') || stopsStr === '2') {
+      return '2 stops';
+    }
+    
+    if (stopsStr.includes('3 stops') || stopsStr === '3') {
+      return '3 stops';
+    }
+    
+    if (stopsStr.includes('4 stops') || stopsStr === '4') {
+      return '4 stops';
+    }
+    
+    // Handle numeric values
+    if (typeof stops === 'number') {
+      if (stops === 0) return 'No stops';
+      if (stops === 1) return '1 stop';
+      if (stops > 1) return `${stops} stops`;
+    }
+    
+    // Return the original value if it's already formatted
+    return stops;
   };
 
   const getDaysLeft = () => {
