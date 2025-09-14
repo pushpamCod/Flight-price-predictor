@@ -10,8 +10,17 @@ import traceback
 
 app = Flask(__name__)
 
-# Configure CORS (update with your actual frontend URL later)
-CORS(app, origins=['http://localhost:3000', 'https://your-frontend-domain.com'])
+# Configure CORS - UPDATED WITH YOUR ACTUAL DOMAINS
+CORS(app, origins=[
+    'http://localhost:3000',  # Local development
+    'https://your-vercel-app.vercel.app',  # Replace with your actual Vercel URL
+    'https://*.vercel.app',  # Allow all Vercel subdomains
+    'https://flight-price-predictor-7pj6.onrender.com'  # Your backend URL (for testing)
+], 
+supports_credentials=True,
+methods=['GET', 'POST', 'OPTIONS'],
+allow_headers=['Content-Type', 'Authorization']
+)
 
 # Global variables for model and data
 model_data = None
@@ -155,7 +164,12 @@ def api_predict():
 @app.route('/health')
 def health_check():
     model_status = "loaded" if model_data is not None else "not loaded"
-    return jsonify({'status': 'healthy', 'model_status': model_status, 'timestamp': datetime.now().isoformat()})
+    return jsonify({
+        'status': 'healthy', 
+        'model_status': model_status, 
+        'timestamp': datetime.now().isoformat(),
+        'message': 'Flight Price Predictor API is running'
+    })
 
 @app.route('/model-info')
 def model_info():
@@ -171,11 +185,11 @@ def model_info():
         'timestamp': datetime.now().isoformat()
     })
 
-# --- Initialize things at import time (important for Vercel cold starts) ---
+# --- Initialize things at import time (important for Render cold starts) ---
 initialize_sample_data()
 load_model()
 
-# ✅ Do NOT run app.run() here → Vercel handles it
+# ✅ Do NOT run app.run() here → Render handles it
 if __name__ == "__main__":
     # Local dev only
     port = int(os.environ.get('PORT', 5000))
