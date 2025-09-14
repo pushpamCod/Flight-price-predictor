@@ -1,15 +1,38 @@
 import axios from 'axios';
-import { API_ENDPOINTS, UI_CONFIG, ERROR_MESSAGES } from '../utils/constants';
+
+// API Endpoints - Updated for deployment
+const API_ENDPOINTS = {
+  PREDICT: '/api/predict',
+  HEALTH: '/api/health',
+  MODEL_INFO: '/api/model-info',
+  OPTIONS: '/api/options'
+};
+
+// Configuration constants
+const UI_CONFIG = {
+  TIMEOUT_DURATION: 30000, // 30 seconds
+  MAX_RETRIES: 3
+};
+
+const ERROR_MESSAGES = {
+  NETWORK_ERROR: 'Network connection failed. Please check your internet connection.',
+  TIMEOUT_ERROR: 'Request timed out. Please try again.',
+  SERVER_ERROR: 'Server error occurred. Please try again later.',
+  VALIDATION_ERROR: 'Invalid data provided. Please check your inputs.',
+  PREDICTION_FAILED: 'Failed to predict flight price. Please try again.',
+  UNKNOWN_ERROR: 'An unexpected error occurred. Please try again.'
+};
 
 // Smart API Base URL function
 const getApiBaseUrl = () => {
-  // If in development, use empty string (proxy will handle it)
+  // In development, use empty string (proxy handles it)
   if (process.env.NODE_ENV === 'development') {
-    return ''; // Empty string = relative URLs, proxy handles it
+    return ''; // Proxy will handle it
   }
   
-  // If in production, use environment variable or fallback to your Render URL
-  return process.env.REACT_APP_API_URL || 'https://flight-price-predictor-7pj6.onrender.com';
+  // In production on Vercel, use relative URLs (Vercel proxy handles it)
+  // The vercel.json rewrites will proxy /api/* to your Render backend
+  return '';
 };
 
 const API_BASE_URL = getApiBaseUrl();
@@ -24,15 +47,9 @@ const apiClient = axios.create({
   }
 });
 
-// Request interceptor for adding auth tokens if needed
+// Request interceptor
 apiClient.interceptors.request.use(
   (config) => {
-    // Add auth token if available
-    const token = localStorage.getItem('authToken');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    
     // Log request in development
     if (process.env.NODE_ENV === 'development') {
       console.log('API Request:', {
@@ -82,14 +99,12 @@ apiClient.interceptors.response.use(
           break;
         case 401:
           error.message = 'Unauthorized. Please login again.';
-          // Clear auth token if exists
-          localStorage.removeItem('authToken');
           break;
         case 403:
           error.message = 'Access forbidden.';
           break;
         case 404:
-          error.message = 'Resource not found.';
+          error.message = 'API endpoint not found.';
           break;
         case 500:
           error.message = data?.error || ERROR_MESSAGES.SERVER_ERROR;
@@ -114,11 +129,13 @@ class ApiService {
   // Flight price prediction
   async predictFlightPrice(flightData) {
     try {
+      console.log('Making prediction request with data:', flightData);
       const response = await apiClient.post(API_ENDPOINTS.PREDICT, flightData);
+      console.log('Prediction response:', response.data);
       return response.data;
     } catch (error) {
       console.error('Prediction API error:', error);
-      throw this.handleError(error, 'prediction');
+      throw error; // Let the interceptor handle the error formatting
     }
   }
 
@@ -129,7 +146,7 @@ class ApiService {
       return response.data;
     } catch (error) {
       console.error('Health check error:', error);
-      throw this.handleError(error, 'health_check');
+      throw error;
     }
   }
 
@@ -140,50 +157,19 @@ class ApiService {
       return response.data;
     } catch (error) {
       console.error('Model info error:', error);
-      throw this.handleError(error, 'model_info');
+      throw error;
     }
   }
 
-  // Generic request method
-  async request(method, endpoint, data = null, options = {}) {
+  // Get dropdown options
+  async getOptions() {
     try {
-      const config = {
-        method,
-        url: endpoint,
-        ...options
-      };
-
-      if (data) {
-        config.data = data;
-      }
-
-      const response = await apiClient(config);
+      const response = await apiClient.get(API_ENDPOINTS.OPTIONS);
       return response.data;
     } catch (error) {
-      console.error(`${method.toUpperCase()} ${endpoint} error:`, error);
-      throw this.handleError(error, 'generic_request');
+      console.error('Options API error:', error);
+      throw error;
     }
-  }
-
-  // Error handling
-  handleError(error, context) {
-    const errorInfo = {
-      context,
-      message: error.message,
-      status: error.response?.status,
-      timestamp: new Date().toISOString()
-    };
-
-    // Log error details
-    console.error('API Service Error:', errorInfo);
-
-    // Return formatted error
-    return {
-      success: false,
-      error: error.message,
-      details: errorInfo,
-      code: error.response?.status || 'NETWORK_ERROR'
-    };
   }
 
   // Retry mechanism for failed requests
@@ -212,25 +198,6 @@ class ApiService {
     }
     
     throw lastError;
-  }
-
-  // Upload file (if needed for future features)
-  async uploadFile(file, endpoint = '/upload') {
-    try {
-      const formData = new FormData();
-      formData.append('file', file);
-
-      const response = await apiClient.post(endpoint, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-      
-      return response.data;
-    } catch (error) {
-      console.error('File upload error:', error);
-      throw this.handleError(error, 'file_upload');
-    }
   }
 
   // Validate flight data before sending to API
@@ -295,8 +262,11 @@ class ApiService {
     return {
       baseURL: API_BASE_URL,
       environment: process.env.NODE_ENV,
-      apiUrl: process.env.REACT_APP_API_URL,
-      endpoints: API_ENDPOINTS
+      endpoints: API_ENDPOINTS,
+      fullEndpoints: Object.keys(API_ENDPOINTS).reduce((acc, key) => {
+        acc[key] = `${API_BASE_URL}${API_ENDPOINTS[key]}`;
+        return acc;
+      }, {})
     };
   }
 }
@@ -310,5 +280,6 @@ export const {
   predictFlightPrice,
   checkHealth,
   getModelInfo,
-  getPredictionWithRetry
+  getPredictionWithRetry,
+  getOptions
 } = apiService;

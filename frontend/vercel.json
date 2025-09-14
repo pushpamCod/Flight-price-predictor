@@ -21,7 +21,20 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "https://flight-price-predictor-7pj6.onrender.com/$1"
+      "destination": "https://flight-price-predictor-7pj6.onrender.com/api/$1"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/static/(.*)",
+      "headers": {
+        "cache-control": "s-maxage=31536000,immutable"
+      },
+      "dest": "/static/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
     }
   ]
 }
